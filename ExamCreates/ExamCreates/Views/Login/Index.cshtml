@@ -1,0 +1,54 @@
+﻿@model ExamCreates.ViewModels.ViewLoginModels
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .tbl {
+            width: 500px;
+            height: 100px;
+        }
+    </style>
+
+</head>
+<body>
+
+
+    <table align="center" class="tbl">
+
+
+        @using (Html.BeginForm("Index", "Login", FormMethod.Post))
+        {
+            @Html.ValidationSummary(true)
+
+            <tr>
+                <td>
+                    @Html.TextBoxFor(x => x.User)
+                    @Html.ValidationMessageFor(x => x.User)
+
+                </td>
+
+            </tr>
+            <tr>
+                <td>
+                    @Html.PasswordFor(x => x.Password)
+                    @Html.ValidationMessageFor(x => x.Password)
+
+                </td>
+
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" value="Giriş yap" />@ViewBag.Error
+                </td>
+            </tr>
+        }
+    </table>
+    @ViewBag.deger;
+
+</body>
+</html>

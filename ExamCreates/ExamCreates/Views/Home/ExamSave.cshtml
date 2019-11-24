@@ -1,0 +1,267 @@
+﻿@using ExamCreates.ViewModels;
+@model ExamShowModels
+@{
+    ViewData["Title"] = "ExamSave";
+    string[] sık = { "A", "B", "C", "D", "DC" };
+    int count = 0;
+}
+
+<html>
+
+<head>
+
+
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        .questions {
+            width: 80%;
+        }
+
+        .title {
+            display: flex;
+            align-items: center;
+        }
+
+            .title input {
+                height: 35px;
+                width: 90%;
+                margin-left: 15px;
+                box-sizing: content-box;
+            }
+
+        .answer {
+            width: 45%;
+            height: 35px;
+        }
+
+        .answer-first-line {
+            display: flex;
+            margin-top: 15px;
+        }
+
+            .answer-first-line p {
+                margin-left: 5px;
+                margin-right: 5px;
+                font-weight: bold;
+            }
+
+        .answer-second-line {
+            display: flex;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+            .answer-second-line p {
+                margin-left: 5px;
+                margin-right: 5px;
+            }
+
+        .answer-right {
+            margin-left: 15px;
+        }
+
+     
+
+        input {
+            padding-left: 5px;
+            padding-right: 5px;
+            font-size: 18px;
+        }
+
+
+
+
+        #Question {
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            margin: 10px;
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-bottom: 10px;
+            align-items: center;
+        }
+
+        .name {
+            position: absolute;
+            top: -25px;
+            left: 20px;
+            padding-right: 10px;
+            padding-left: 10px;
+            padding-top: 0;
+        }
+
+        .elements {
+            border-style: solid;
+            width: 48%;
+            height: 250px;
+            margin-right: 5px;
+            margin-top: 15px;
+        }
+
+        .tr {
+            width: 100%;
+            height: 60px;
+        }
+
+        .td {
+            width: 50%;
+            height: 60px;
+        }
+
+        .inputs {
+            width: 100%;
+        }
+
+        #title, #detail {
+            min-height: 50px;
+            width: 80%;
+        }
+
+        .questions-wrapper {
+            display: flex;
+            flex-direction: column;
+            width: 90vw;
+        }
+        .elemets-wrapper{
+            display:flex;
+            flex-wrap:wrap;
+            width:95%;
+        }
+    </style>
+</head>
+<body>
+    <a href="/Home/ShowExamList">Sınavları Göster</a>
+    <div class="text-center">
+        <h1 class="display-4">Welcome</h1>
+        <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+        <p>@ViewBag.error</p>
+
+
+
+        <div id="Question">
+            <label id='title' name='title' style='width:auto;height:auto'>@Model.ExamListModels.title</label>
+            <label id='detail' name='detail' style='width:auto;height:auto'>@Model.ExamListModels.detail</label>
+
+            <div class="elemets-wrapper">
+                @foreach (var data in Model.ExamListModels.insertlist)
+                {
+                    count++;
+                    string question = "question" + count;
+                    string a = sık[0] + count;
+                    string b = sık[1] + count;
+                    string c = sık[2] + count;
+                    string d = sık[3] + count;
+                    string dc = sık[4] + count;
+                    string soru = "Soru-" + count;
+
+                    <div class='elements'>
+
+
+                        <div class="questions">
+                            <div class="title">
+
+                                <button id="@question" disabled><p>@soru )@data.question</p></button>
+                            </div>
+                            <div class="answer-first-line">
+                                <button class="answer" id="@a" onclick="select(this.id)">@sık[0])@data.A</button>
+                                <button class="answer answer-right" id="@b" onclick="select(this.id)">@sık[1])@data.B</button>
+                            </div>
+                            <div class="answer-second-line">
+                                <button id="@c" class="answer" onclick="select(this.id)">@sık[2])@data.C</button>
+                                <button class="answer answer-right" id="@d" onclick="select(this.id)">@sık[3])@data.D</button>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+
+
+                }
+            </div>
+            @{
+                string json = Json.Serialize(Model.question_id).ToString();
+            }
+            <button onclick="ExamCheck('@json');" style='width:200px;height:50px' id="completeexam">Sınavı Tamamla</button>
+        </div>
+
+        
+        <script>
+
+            function select(id)
+            {
+                   var values = [ "A","B", "C", "D"];
+                   var selected_id = parseInt(id.charAt(1));
+                    for (var i = 0; i < 4; i++) {
+                      var name = "#" +values[i] + selected_id ;
+                      if (values[i] + selected_id == id)
+                            $(name).css("background-color", "blue");
+                       else
+                            $(name).css("background-color", "");
+                          
+                    
+                }
+            }
+            function ExamCheck(questionid) {
+                try {
+                    $.ajax({
+                        type: "POST",
+                        url: "/Home/ExamCheck",
+                        data: JSON.stringify(questionid),
+                        contentType: "application/json",
+                        dataType: "json",
+                        success: function (response) {
+                            var values = ['A', 'B', 'C', 'D'];
+                            for (var i = 0; i < 4; i++) {
+
+                                var name = "";
+                                for (var j = 0; j < 4; j++) {
+                                    name = "#" + values[j] + (i + 1);
+                                    if ($(name).css("background-color") == "rgb(0, 0, 255)")
+                                        break;
+                                }
+                                if (name == "") {
+                                    alert("Lütfen hepsini doldurun");
+                                    break;
+                                }
+
+                                if (response[i] == $(name).text().substr(2))
+                                    $(name).css("background-color", "green");
+                                else
+                                    $(name).css("background-color", "red");
+                            }
+                            for (var i = 0; i < 4; i++) {
+
+                                var name = "";
+                                for (var j = 0; j < 4; j++) {
+                                    name = "#" + values[j] + (i + 1);
+                                    $(name).attr('disabled', true);
+                                }
+                            }
+                            $("#completeexam").attr('disabled', true);
+                        }
+                    });
+                
+              
+
+
+                }
+                catch
+                {
+
+                    return;
+                }
+
+
+            }
+        </script>
+    </div>
+</body>
+
+</html>
+

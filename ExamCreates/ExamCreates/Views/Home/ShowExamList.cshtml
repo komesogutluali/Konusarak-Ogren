@@ -1,0 +1,23 @@
+﻿@model IEnumerable<ExamCreates.Models.ExamModels>
+@{
+    ViewData["Title"] = "ShowExamList";
+}
+
+    <html>
+
+    <head>
+        </head>
+<body>
+    <table >
+        @foreach (ExamModels data in Model)
+        {
+        <tr>
+
+            <td style="text-align:center;width:30%;"><label>@data.Title</label></td>
+            <td style="text-align:center;width:30%;"><label>@data.Dater</label></td>
+            <td style="text-align:center;width:30%;"><a href="/Home/ExamDelete/@data.ID">Sil</a></td>
+        </tr>
+        }
+    </table>
+</body>
+</html>
